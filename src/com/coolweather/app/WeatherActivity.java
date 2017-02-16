@@ -5,16 +5,20 @@ import com.coolweather.app.util.HttpUtil;
 import com.coolweather.app.util.Utility;
 
 import android.app.Activity;
+
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class WeatherActivity extends Activity{
+public class WeatherActivity extends Activity implements OnClickListener{
 
 	private TextView cityNameText;
 	private TextView publishTimeText;
@@ -22,7 +26,8 @@ public class WeatherActivity extends Activity{
 	private TextView weatherDespText;
 	private TextView temp1Text;
 	private TextView temp2Text;
-	
+	private Button switch_city;
+	private Button refresh_weather;
 	private LinearLayout weatherInfoLayout;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +42,10 @@ public class WeatherActivity extends Activity{
 		temp1Text=(TextView)findViewById(R.id.temp1);
 		temp2Text=(TextView)findViewById(R.id.temp2);
 		weatherInfoLayout=(LinearLayout)findViewById(R.id.weather_info_layout);
+		switch_city=(Button)findViewById(R.id.switch_city);
+		refresh_weather=(Button)findViewById(R.id.refresh_weather);
+		switch_city.setOnClickListener(this);
+		refresh_weather.setOnClickListener(this);
 		
 		String countyCode=getIntent().getStringExtra("county_code");
 		if(!TextUtils.isEmpty(countyCode)){
@@ -123,6 +132,37 @@ public class WeatherActivity extends Activity{
 	    weatherInfoLayout.setVisibility(View.VISIBLE);
 	    cityNameText.setVisibility(View.VISIBLE);
 	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch(v.getId()){
+		case R.id.switch_city:
+			Intent intent=new Intent(WeatherActivity.this,ChooseAreaActivity.class);
+			intent.putExtra("from_weather_activity", true);
+			startActivity(intent);			
+			finish();
+			break;
+			
+		case R.id.refresh_weather:
+			publishTimeText.setText("Í¬²½ÖÐ");
+			SharedPreferences pref=
+			    PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this);
+			String weatherCode=pref.getString("weather_code", "");
+			if(!TextUtils.isEmpty(weatherCode)){
+			queryWeatherInfo(weatherCode);
+			}
+			break;
+		default:
+			break;
+		
+		}
+	}
+
+	
+
+	
+
 	
 	
 }

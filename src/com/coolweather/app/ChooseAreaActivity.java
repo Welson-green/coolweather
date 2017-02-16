@@ -51,15 +51,17 @@ public class ChooseAreaActivity extends Activity{
 	private ArrayAdapter<String> adapter;
 	private List<String> dataList=new ArrayList<String>();
 	private CoolWeatherDB coolWeatherDB;
+	private boolean isFromWeatherActivity;
 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		isFromWeatherActivity=getIntent().getBooleanExtra("from_weather_activity", false);
 		SharedPreferences pref=
 				PreferenceManager.getDefaultSharedPreferences(ChooseAreaActivity.this);
-		if(pref.getBoolean("city_selected", false)){
+		if((pref.getBoolean("city_selected", false)) && !isFromWeatherActivity){
 			Intent intent=new Intent(ChooseAreaActivity.this,WeatherActivity.class);
 			startActivity(intent);
 			finish();
@@ -233,6 +235,10 @@ public class ChooseAreaActivity extends Activity{
 		}else if(CURRENT_LEVEL==CITY_LEVEL){
 			queryProvinces();
 		}else{
+			if(isFromWeatherActivity){
+				Intent intent=new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+				startActivity(intent);
+			}
 			finish();
 		}
 	}
