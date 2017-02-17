@@ -1,5 +1,6 @@
 package com.coolweather.app;
 
+import com.coolweather.app.service.AutoUpdateService;
 import com.coolweather.app.util.HttpCallbackListener;
 import com.coolweather.app.util.HttpUtil;
 import com.coolweather.app.util.Utility;
@@ -60,19 +61,19 @@ public class WeatherActivity extends Activity implements OnClickListener{
 	}
 
 	//查询县级代号所对应的天气代号
-	public void queryWeatherCode(String countyCode){
+	private void queryWeatherCode(String countyCode){
 		String address="http://www.weather.com.cn/data/list3/city"+countyCode+".xml";
 		queryFromServer(address,"countyCode");
 	}
 
 	//查询天气代号所对应的天气
-	public void queryWeatherInfo(String weatherCode){
+	private void queryWeatherInfo(String weatherCode){
 		String address="http://www.weather.com.cn/data/cityinfo/"+weatherCode+".html";
 		queryFromServer(address,"weatherCode");
 	}
 	
 	//根据传入的地址和类型向服务器查询天气代号或者天气代号所对应的信息
-	public void queryFromServer(String address,final String type){
+	private void queryFromServer(String address,final String type){
 		HttpUtil.sendHttpRequest(address, new HttpCallbackListener(){
 
 			@Override
@@ -131,6 +132,9 @@ public class WeatherActivity extends Activity implements OnClickListener{
 		temp2Text.setText(pref.getString("temp2", ""));
 	    weatherInfoLayout.setVisibility(View.VISIBLE);
 	    cityNameText.setVisibility(View.VISIBLE);
+	    
+	    Intent intent=new Intent(WeatherActivity.this,AutoUpdateService.class);
+	    startService(intent);
 	}
 
 	@Override
